@@ -1,8 +1,11 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import createMapGrid from "../utils/createGrid";
+import {createGrid,addGrid} from "../utils/createGrid";
+import BasicMob from "../entities/basicMob/basicMob";
+import Map from "../map/map";
 const scene = new THREE.Scene();
+
 scene.fog = new THREE.FogExp2(0xffffff, 0.002);
 const camera = new THREE.PerspectiveCamera(
   75,
@@ -10,22 +13,12 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-camera.position.set(40, 20, 0);
-const grid = createMapGrid(20, 20);
+camera.position.set(20, 20, 20);
 
-grid.forEach((row, rowIndex) => {
-  row.forEach((col, colIndex) => {
-    const cube = new THREE.Mesh(col.data.geometry, col.data.material);
-    cube.castShadow = true;
-    cube.receiveShadow = true;
-    cube.position.set(rowIndex, cube.geometry.parameters.height / 2, colIndex);
-    scene.add(cube);
-  });
-});
+const map = new Map(20,scene);
+map.addToScene()
 
-
-
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({antialias:true});
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 renderer.setClearColor(0xffffff);
@@ -33,33 +26,20 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.BasicShadowMap;
 
 window.addEventListener('resize', function()
-
-    {
-      var width = window.innerWidth;
-      var height = window.innerHeight;
-      renderer.setSize(width, height);
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-    });
-
+  {
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+    renderer.setSize(width, height);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+  });
 
 const orbit = new OrbitControls(camera, renderer.domElement);
 orbit.maxPolarAngle = Math.PI / 2.5;
 orbit.screenSpacePanning = false;
 orbit.minDistance = 5
 
-const gltfLoader = new GLTFLoader();
-gltfLoader.load("./assets/base/scene.gltf", (base) => {
-  base.scene.traverse(function (node) {
-    if (node.isMesh) {
-      node.castShadow = true;
-    }
-  });
-  base.scene.position.set(9.5, -0.2, 9.5);
-  base.scene.scale.set(0.3, 0.3, 0.3);
 
-  scene.add(base.scene);
-});
 
 const groundGeo = new THREE.PlaneGeometry(10000, 10000);
 const groundMat = new THREE.MeshLambertMaterial({ color: 0xffffff });
@@ -91,4 +71,6 @@ scene.add(ambientLight);
 
 orbit.update();
 
-export {scene,camera,orbit,renderer}
+
+
+export {scene,camera,orbit,renderer,map}
