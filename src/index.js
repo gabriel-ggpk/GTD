@@ -6,11 +6,10 @@ import * as THREE from "three";
 const pointer = new THREE.Vector2();
 const raycaster = new THREE.Raycaster();
 raycaster.layers.set(1)
-var clock = new THREE.Clock();
-var spawnTime = 0;
-var delta = 0;
-//var direction = new THREE.Vector3(0, 0, 1);
-var speed = 2000; // units a second - 2 seconds
+let clock = new THREE.Clock();
+let spawnTime = 0;
+let delta = 0;
+let speed = 2000; // units a second - 2 seconds
 
 
 const mobs = []

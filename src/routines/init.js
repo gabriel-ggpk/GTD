@@ -1,8 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import {createGrid,addGrid} from "../utils/createGrid";
-import BasicMob from "../entities/basicMob/basicMob";
+
 import Map from "../map/map";
 const scene = new THREE.Scene();
 
@@ -27,8 +25,8 @@ renderer.shadowMap.type = THREE.BasicShadowMap;
 
 window.addEventListener('resize', function()
   {
-    var width = window.innerWidth;
-    var height = window.innerHeight;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
     renderer.setSize(width, height);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();

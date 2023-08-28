@@ -25,7 +25,7 @@ class Tower {
       }
     });
 
-    if(closerDistance=Number.MAX_VALUE){
+    if(closerDistance===Number.MAX_VALUE){
         this.target = null 
     }
     else{
