@@ -83,7 +83,50 @@ function addGrid(grid, size) {
 }
 
 export { createGrid, addGrid };
-
+function isInAForbidenPosition(forbidenEdge, x, y, size) {
+  return (
+    (x !== 0 || forbidenEdge.includes("right")) &&
+    (x !== size - 1 || forbidenEdge.includes("left")) &&
+    (y !== 0 || forbidenEdge.includes("down")) &&
+    (y !== size - 1 || forbidenEdge.includes("up"))
+  );
+}
+function checkUp(x, y, visited) {
+  return (
+    y > 0 &&
+    !visited[x][y - 1] &&
+    !visited[x - 1]?.[y - 1] &&
+    !visited[x + 1]?.[y - 1] &&
+    !visited[x]?.[y - 2]
+  );
+}
+function checkDown(x, y, visited,size) {
+  return (
+    y < size - 1 &&
+    !visited[x][y + 1] &&
+    !visited[x - 1]?.[y + 1] &&
+    !visited[x + 1]?.[y + 1] &&
+    !visited[x]?.[y + 2]
+  );
+}
+function checkLeft(x, y, visited) {
+  return (
+    x > 0 &&
+    !visited[x - 1]?.[y] &&
+    !visited[x - 1]?.[y - 1] &&
+    !visited[x - 1]?.[y + 1] &&
+    !visited[x - 2]?.[y]
+  );
+}
+function checkRight(x, y, visited,size) {
+  return (
+    x < size - 1 &&
+    !visited[x + 1]?.[y] &&
+    !visited[x + 1]?.[y - 1] &&
+    !visited[x + 1]?.[y + 1] &&
+    !visited[x + 2]?.[y]
+  );
+}
 function createRandomPath(
   size,
   startingPoint = undefined,
@@ -96,7 +139,6 @@ function createRandomPath(
 
   let x = startingPoint?.[0];
   let y = startingPoint?.[1];
-
 
   switch (lastDir) {
     case lastDir[1] === -1:
@@ -133,64 +175,15 @@ function createRandomPath(
   visited[x][y] = true;
 
   // Continue moving until reaching the border
-  while (
-    (x !== 0 || forbidenEdge.includes("right")) &&
-    (x !== size - 1 || forbidenEdge.includes("left")) &&
-    (y !== 0 || forbidenEdge.includes("down")) &&
-    (y !== size - 1 || forbidenEdge.includes("up"))
-  ) {
-    let directions = [0, 1, 2, 3]; // 0: up, 1: down, 2: left, 3: right
+  while (isInAForbidenPosition(forbidenEdge, x, y, size)) {
     let validDirections = [];
 
     // Check which directions are valid (not visited and within the grid boundaries)
-    for (const direction of directions) {
-      switch (direction) {
-        case 0: // Move up
-          if (
-            y > 0 &&
-            !visited[x][y - 1] &&
-            !visited[x - 1]?.[y - 1] &&
-            !visited[x + 1]?.[y - 1] &&
-            !visited[x]?.[y - 2]
-          ) {
-            validDirections.push(0);
-          }
-          break;
-        case 1: // Move down
-          if (
-            y < size - 1 &&
-            !visited[x][y + 1] &&
-            !visited[x - 1]?.[y + 1] &&
-            !visited[x + 1]?.[y + 1] &&
-            !visited[x]?.[y + 2]
-          ) {
-            validDirections.push(1);
-          }
-          break;
-        case 2: // Move left
-          if (
-            x > 0 &&
-            !visited[x - 1]?.[y] &&
-            !visited[x - 1]?.[y - 1] &&
-            !visited[x - 1]?.[y + 1] &&
-            !visited[x - 2]?.[y]
-          ) {
-            validDirections.push(2);
-          }
-          break;
-        case 3: // Move right
-          if (
-            x < size - 1 &&
-            !visited[x + 1]?.[y] &&
-            !visited[x + 1]?.[y - 1] &&
-            !visited[x + 1]?.[y + 1] &&
-            !visited[x + 2]?.[y]
-          ) {
-            validDirections.push(3);
-          }
-          break;
-      }
-    }
+
+    if (checkUp(x, y, visited)) validDirections.push(0);
+    if (checkDown(x, y, visited,size)) validDirections.push(1);
+    if (checkLeft(x, y, visited)) validDirections.push(2);
+    if (checkRight(x, y, visited,size)) validDirections.push(3);
 
     // If there are no valid directions, backtrack to the previous cell
     if (validDirections.length === 0) {
