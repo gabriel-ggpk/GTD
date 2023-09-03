@@ -24,7 +24,9 @@ class BasicMob {
             this.die();
             return
         }
-        this.movement = new THREE.Vector3(this.map.path[this.position-1][0] - this.map.path[this.position][0],0,this.map.path[this.position-1][1] - this.map.path[this.position][1])
+        this.movement = new THREE.Vector3(this.map.path[this.position-1][0] 
+        - this.map.path[this.position][0],0,this.map.path[this.position-1][1] 
+        - this.map.path[this.position][1])
     }
 
     checkStep(){
@@ -34,7 +36,8 @@ class BasicMob {
         currentSquare.setZ(this.movement.z >= 0 ? Math.floor(currentSquare.z) : Math.ceil(currentSquare.z))
         
         
-        if(currentSquare.x == this.map.path[this.position-1]?.[0] && currentSquare.z == this.map.path[this.position-1]?.[1]){
+        if(currentSquare.x == this.map.path[this.position-1]?.[0]
+        && currentSquare.z == this.map.path[this.position-1]?.[1]){
             this.instance.position.set(currentSquare.x,1,currentSquare.z)
             this.nextStep()
         }

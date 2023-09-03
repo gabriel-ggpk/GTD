@@ -16,7 +16,7 @@ const mobs = []
 
 let rollOverMesh, rollOverMaterial;
 const rollOverGeo = new THREE.BoxGeometry( 1, 1, 1 );
-				rollOverMaterial = new THREE.MeshBasicMaterial( { color: 0xff0000, opacity: 0.5, transparent: true } );
+				rollOverMaterial = new THREE.MeshBasicMaterial( { color: 0x70aff0, opacity: 0.5, transparent: true } );
 				rollOverMesh = new THREE.Mesh( rollOverGeo, rollOverMaterial );
 				scene.add( rollOverMesh );
 
@@ -58,26 +58,43 @@ renderer.setAnimationLoop(animate);
 
 
 window.addEventListener( 'mousemove', onPointerMove );
-document.addEventListener( 'mousedown', onPointerDown );
-function onPointerDown( event ) {
-  const intersects = raycaster.intersectObjects( scene.children );
-  if ( intersects.length > 0 ) {
+var mDragging = false;
+var mDown = false;
 
-    const intersect = intersects[ 0 ];
-    const tower = new Tower( new THREE.MeshStandardMaterial({
-      color: 0x70af20,
-    }),
-     new THREE.BoxGeometry(
-      1,
-      1,
-      1))
-      tower.instance.position.copy( intersect.point ).addScalar(0.5).floor()
-      tower.spawn(map.container)
+window.addEventListener('mousedown', function () {
+    mDown = true;
+});
+window.addEventListener('mousemove', function () {
+    if(mDown) {
+        mDragging = true;
+    }
+});
+window.addEventListener('mouseup', function() {
+    // If not dragging, then it's a click!
+    if(mDragging === false) {
+      const intersects = raycaster.intersectObjects( scene.children );
+      if ( intersects.length > 0 ) {
+    
+        const intersect = intersects[ 0 ];
+        const tower = new Tower( new THREE.MeshStandardMaterial({
+          color: 0x70aff0,
+        }),
+         new THREE.BoxGeometry(
+          1,
+          1,
+          1))
+          tower.instance.position.copy( intersect.point ).addScalar(0.5).floor()
+          tower.spawn(map.container)
+    
+    
+      }
+    }
 
+    // Reset variables
+    mDown = false;
+    mDragging = false;
+});
 
-  }
-  
-}
 function onPointerMove( event ) {
 
 	// calculate pointer position in normalized device coordinates
